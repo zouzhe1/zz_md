@@ -1,6 +1,7 @@
 # Configuration file for the Sphinx documentation builder.
 
 # -- Project information
+#test
 
 project = 'Lumache'
 copyright = '2021, Graziella'
