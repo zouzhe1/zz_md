@@ -1,0 +1,29 @@
+# 第一课记录
+
+## 1，
+
+### 1，工具
+
+[catkin_simple](https://github.com/catkin/catkin_simple.git)
+
+### 2，启动多节点launch
+
+https://wiki.ros.org/roslaunch
+
+在mynode0402程序包中，撞见一个子目录launch，并在内新建一个文件xx.launch
+
+```c
+<launch>
+    <node name="publisher" pkg="my0402node" type="lb_publisher"/>
+    <node name="subscriber" pkg="my0402node" type="lb_subscriber"/>
+</launch>
+```
+
+
+
+
+
+
+
+
+

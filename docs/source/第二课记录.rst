@@ -1,0 +1,92 @@
+# 第二章记录
+
+## 1，
+
+ROS话题：发布和订阅方式是广播的，谁都能收到。
+
+ROS服务：双向，一对一，可靠通信。（目的是快速响应）
+
+客户端-服务端是端到端的，限制是传输阻塞，客户端等服务端。
+
+动作客户端-动作服务端允许没有阻塞。
+
+## 1.2，定义自定义消息
+
+ros::Time::now()
+
+
+
+## 1.3，定义变长的消息
+
+msg文件内定义
+
+```
+float64[] dbl_vec
+```
+
+在package.xml内
+
+```
+<build_depend>message_generation</build_depend>
+<run_depend>message_runtime</run_depend>
+```
+
+### 1.手动设置大小resize()
+
+```
+custom_msgs::VecOfDoubles vec_msg;
+vec_msg.dbl_vec.resize(3);   //设置大小
+
+vec_msg.dbl_vec[0]=1.1;
+vec_msg.dbl_vec.[1]=2.1;
+vec_msg.dbl_vec.[3]=33;
+```
+
+### 2，添加到向量，自动调整大小push_back()
+
+```
+double couter=0;
+while(ros::ok())
+{
+	vec_msg.dbl_vec.push_back(counter++);//把counter变量每次添加到dbl_vec内
+}
+```
+
+## 1.4，订阅者size
+
+```
+void mycallback(const custom_msgs::VecOfDoubles& message_holder)
+{
+	std::vector <double> vec_of_double=message_holder.dbl_vec; //向量，就是指针
+	int num=vec_of_doubles.size(); //计算传来的数据长度
+	//循环num打印
+	for(int i=0;i<num;i++)
+	{
+	    ROS_INFO("vec[%d]=%f",i,vec_of_double);
+	}
+}
+```
+
+
+
+
+
+## 1.5，package.xml
+
+```
+<package>
+<build_depend>message_generation</build_depend>
+<run_depend>message_runtime</run_depend>
+
+<package format="2">
+<build_depend>message_generation</build_depend>
+<exec_depend>message_runtime</exec_depend>
+```
+
+
+
+# 2.服务
+
+
+
+https://mm.edrawsoft.cn/template/189926

@@ -1,0 +1,134 @@
+# 第一课命令总结和代码
+
+## 1，本课命令总结
+
+``` c
+source devel/setup.bash
+```
+
+``` c
+catkin_make
+```
+
+``` c
+rostopic 
+    list 列出
+    hz  频率
+    bw 带宽
+    info 整体信息
+    echo 显示传送的真实数据
+```
+
+``` c
+rosnode list 显示节点
+```
+
+```c
+rqt_graph  图形显示node topic等关系
+```
+
+```
+rqt_console  能看到通信数据可视化的
+```
+
+```
+rosbag record topic 记录话题数据到当前命令目录下文件
+rosbag paly aa.bag   播放上面记录的文件
+```
+
+想看到aa.bag内容，先停止所有节点，然后运行rqt_console，然后启动订阅器节点。开启play程序会模拟之前发送topic数据到订阅器。
+
+```
+rqt_plot 
+```
+
+
+
+```
+roslaunch nodename node.launch 不需要roscore
+```
+
+
+
+## 2 本课程序关键代码
+
+rosrun需要roscore
+
+roslaunch不需要roscore
+
+
+
+```c
+ros::Rate myname(1000)  定义一个1000hz的频率对象
+myname.sleep()  在循环中调用，用于延时，也就是1Khz，1ms
+```
+
+```c
+ros::NodeHandle n;  定义一个节点n，用来在节点里面实现功能
+ros::Publisher lb_publisher_object=n.advertise<std_msgs::Float64>("topic",1);
+发布一个topic的话题，每次1个，类型是float64
+```
+
+```c
+ROS_INFO("%f",input_float.data);  等于printf用法
+```
+
+```c
+lb_publisher_object.publish(input_float);  循环中发送出去
+```
+
+CmakeLists.txt中
+
+```c
+add_executable(lb_publisher src/lb_publisher.cpp)
+target_link_libraries(lb_publisher
+  ${catkin_LIBRARIES}
+)
+```
+
+## 3，本课代码
+
+publisher
+
+```c++
+#include <ros/ros.h>
+#include <std_msgs/Float64.h>
+int main(int argc, char * argv[])
+{
+    ros::init(argc, argv, "lb_publisher");
+    ros::NodeHandle n;
+    ros::Publisher lb_publisher_object=n.advertise<std_msgs::Float64>("topic",1);
+    std_msgs::Float64 input_float;
+    
+    input_float.data=0.0;
+    ros::Rate loop_rate(1000);
+    while (ros::ok())
+    {
+        ROS_INFO("%f",input_float.data);
+        input_float.data=input_float.data+0.001;
+        lb_publisher_object.publish(input_float);
+        loop_rate.sleep();
+    }
+    return 0;
+}
+```
+
+subscriber
+
+```c++
+#include <ros/ros.h>
+#include "std_msgs/Float64.h"
+void mycallback(const std_msgs::Float64 & message)
+{
+    ROS_INFO("rev data is :  %f",message.data);
+}
+int main(int argc, char * argv[])
+{
+    ros::init(argc, argv, "lb_subscriber");
+    ros::NodeHandle n;
+    ros::Subscriber lb_subscriber_object=n.subscribe("topic",1,mycallback);
+    ros::spin();
+    return 0;
+}
+```
+
